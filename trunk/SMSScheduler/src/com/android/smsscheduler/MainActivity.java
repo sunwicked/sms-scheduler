@@ -75,7 +75,7 @@ public class MainActivity extends Activity
 		
 		Long time = new GregorianCalendar().getTimeInMillis()+60*1000;
 		
-		Intent intent = new Intent(MainActivity.this, AlaramReceiver.class);
+		Intent intent = new Intent(MainActivity.this, AlarmReceiver.class);
 		
 		Bundle b = new Bundle() ;
 		b.putString("sms_text", smsStr);
