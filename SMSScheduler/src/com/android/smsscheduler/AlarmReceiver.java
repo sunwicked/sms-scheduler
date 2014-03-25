@@ -8,7 +8,7 @@ import android.telephony.SmsManager;
 import android.util.Log;
 import android.widget.Toast;
 
-public class AlaramReceiver extends BroadcastReceiver
+public class AlarmReceiver extends BroadcastReceiver
 {
 	String phoneNo = "8800839680";
 	String smsStr = "This is msg from application which is  scheduled " ;
