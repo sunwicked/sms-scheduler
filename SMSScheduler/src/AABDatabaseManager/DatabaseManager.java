@@ -23,7 +23,7 @@ public class DatabaseManager {
 	private final String TABLE_ROW_ID = "id";
 	private final String TABLE_ROW_MSG = "message";
 	private final String TABLE_ROW_NAME = "contact_name";
-	private final String TABLE_ROW_NUMBER = "contact_number";
+	private final String TABLE_ROW_PHONENUM = "contact_number";
 	private final String TABLE_ROW_INITIALTIME = "initial_time";
 	private final String TABLE_ROW_SENDTIME = "send_time";
 
@@ -44,7 +44,7 @@ public class DatabaseManager {
 					+ TABLE_ROW_ID
 					+ " integer primary key autoincrement not null,"
 					+ TABLE_ROW_MSG + " text" + TABLE_ROW_NAME + " text"
-					+ TABLE_ROW_NUMBER + " integer not null"
+					+ TABLE_ROW_PHONENUM + " integer not null"
 					+ TABLE_ROW_INITIALTIME + " long" + TABLE_ROW_SENDTIME
 					+ " long" + ");";
 
@@ -70,7 +70,7 @@ public class DatabaseManager {
 		// this is how you add a value to a ContentValues object
 		// we are passing in a key string and a value string each time
 		values.put(TABLE_ROW_NAME, smsObj.getContactName());
-		values.put(TABLE_ROW_NUMBER, smsObj.getContactNumber());
+		values.put(TABLE_ROW_PHONENUM, smsObj.getContactNumber());
 		values.put(TABLE_ROW_MSG, smsObj.getMessage());
 		values.put(TABLE_ROW_INITIALTIME, smsObj.getInitialTime());
 		values.put(TABLE_ROW_SENDTIME, smsObj.getSendTime());
@@ -85,7 +85,7 @@ public class DatabaseManager {
 		}
 	}
 
-	public void deleteRow(long rowID) {
+	public void deleteRow(int rowID) {
 		// ask the database manager to delete the row of given id
 		try {
 			db.delete(TABLE_NAME, TABLE_ROW_ID + "=" + rowID, null);
@@ -95,11 +95,11 @@ public class DatabaseManager {
 		}
 	}
 
-	public void updateRow(long rowID, SmsModel smsObj) {
+	public void updateRow(int rowID, SmsModel smsObj) {
 		// this is a key value pair holder used by android's SQLite functions
 		ContentValues values = new ContentValues();
 		values.put(TABLE_ROW_NAME, smsObj.getContactName());
-		values.put(TABLE_ROW_NUMBER, smsObj.getContactNumber());
+		values.put(TABLE_ROW_PHONENUM, smsObj.getContactNumber());
 		values.put(TABLE_ROW_MSG, smsObj.getMessage());
 		values.put(TABLE_ROW_INITIALTIME, smsObj.getInitialTime());
 		values.put(TABLE_ROW_SENDTIME, smsObj.getSendTime());
@@ -113,14 +113,14 @@ public class DatabaseManager {
 		}
 	}
 
-	public SmsModel getRowAsObject(long rowID) {
+	public SmsModel getRowAsObject(int rowID) {
 		SmsModel rowSMSObj = new SmsModel();
 		Cursor cursor;
 
 		try {
 
 			cursor = db.query(TABLE_NAME, new String[] { TABLE_ROW_ID,
-					TABLE_ROW_MSG, TABLE_ROW_NAME, TABLE_ROW_NUMBER,
+					TABLE_ROW_MSG, TABLE_ROW_NAME, TABLE_ROW_PHONENUM,
 					TABLE_ROW_INITIALTIME, TABLE_ROW_SENDTIME }, TABLE_ROW_ID
 					+ "=" + rowID, null, null, null, null, null);
 			if (!cursor.isAfterLast()) {
@@ -148,7 +148,7 @@ public class DatabaseManager {
 		try {
 
 			cursor = db.query(TABLE_NAME, new String[] { TABLE_ROW_ID,
-					TABLE_ROW_MSG, TABLE_ROW_NAME, TABLE_ROW_NUMBER,
+					TABLE_ROW_MSG, TABLE_ROW_NAME, TABLE_ROW_PHONENUM,
 					TABLE_ROW_INITIALTIME, TABLE_ROW_SENDTIME }, null, null,
 					null, null, null);
 			if (!cursor.isAfterLast()) {
