@@ -1,12 +1,10 @@
 package com.android.smsDatabase.model;
 
-import java.util.Date;
-
 public class SmsModel {
 
 	String message, contactName;
 	int contactNumber;
-	Long sendTime, settingTime;
+	Long sendTime, initialTime;
 
 	public String getMessage() {
 		return message;
@@ -40,12 +38,12 @@ public class SmsModel {
 		this.sendTime = sendTime;
 	}
 
-	public Long getSettingTime() {
-		return settingTime;
+	public Long getInitialTime() {
+		return initialTime;
 	}
 
-	public void setSettingTime(Long settingTime) {
-		this.settingTime = settingTime;
+	public void setInitialTime(Long settingTime) {
+		this.initialTime = settingTime;
 	}
 
 }
