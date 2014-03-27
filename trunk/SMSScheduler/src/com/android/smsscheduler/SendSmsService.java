@@ -4,16 +4,17 @@ import android.app.IntentService;
 import android.content.Intent;
 import android.telephony.SmsManager;
 import android.util.Log;
-import android.widget.Toast;
 
 public class SendSmsService extends IntentService {
 
-	String phoneNo = "8800839680";
+	String phoneNo = "9711082272";
 	String smsStr = "This is msg from application which is  scheduled ";
-	String TAG = "AlaramReceiver";
+	static String TAG = "AlaramReceiver";
 
-	public SendSmsService(String name) {
-		super(name);
+	// km5Aw8he9sj6
+
+	public SendSmsService() {
+		super(TAG);
 		// TODO Auto-generated constructor stub
 	}
 
