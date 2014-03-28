@@ -6,5 +6,8 @@
     <string name="hello_world">Send SMS</string>
     <string name="txt_edit_hint">Write SMS</string>
     <string name="txt_btn_send">Send</string>
+    <string name="txt_pick_time">Schedule Time</string>
+    <string name="txt_pick_date">Schedule Date</string>
+    <string name="txt_schedule_sms">Schedule SMS</string>
 
 </resources>

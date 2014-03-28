@@ -24,12 +24,34 @@
         />
     
     <Button 
-        android:id="@+id/sendBtn"
+        android:id="@+id/pickTimeBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/smsEdit"
         android:layout_marginTop="10dp"
-        android:text="@string/txt_btn_send"
+        android:text="@string/txt_pick_time"
+        android:onClick="showTimePickerDialog"
+        />
+    
+    <Button 
+        android:id="@+id/pickDateBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/smsEdit"
+        android:layout_toRightOf="@id/pickTimeBtn"
+        android:layout_marginTop="10dp"
+        android:layout_marginLeft="8dp"
+        android:text="@string/txt_pick_date"
+        android:onClick="showDatePickerDialog"
+        />
+    
+    <Button 
+        android:id="@+id/sendBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/pickTimeBtn"
+        android:layout_marginTop="10dp"
+        android:text="@string/txt_schedule_sms"
         />
 
 </RelativeLayout>
