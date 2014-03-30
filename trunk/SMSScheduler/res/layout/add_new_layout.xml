@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" >
+
+        <TextView
+            android:id="@+id/titleText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/hello_world" />
+
+        <EditText
+            android:id="@+id/phoneNumEdit"
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/titleText"
+            android:layout_marginTop="10dp"
+            android:hint="@string/txt_phone_num_hint" />
+
+        <Button
+            android:id="@+id/pickContactBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBaseline="@id/phoneNumEdit"
+            android:layout_marginTop="10dp"
+            android:layout_toRightOf="@id/phoneNumEdit"
+            android:onClick="readContacts"
+            android:text="@string/txt_btn_pickcontact" />
+
+        <EditText
+            android:id="@+id/smsEdit"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/phoneNumEdit"
+            android:layout_marginTop="10dp"
+            android:hint="@string/txt_edit_hint" />
+
+        <Button
+            android:id="@+id/pickTimeBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/smsEdit"
+            android:layout_marginTop="10dp"
+            android:onClick="showTimePickerDialog"
+            android:text="@string/txt_pick_time" />
+
+        <Button
+            android:id="@+id/pickDateBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/smsEdit"
+            android:layout_marginLeft="8dp"
+            android:layout_marginTop="10dp"
+            android:layout_toRightOf="@id/pickTimeBtn"
+            android:onClick="showDatePickerDialog"
+            android:text="@string/txt_pick_date" />
+
+        <Button
+            android:id="@+id/sendBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/pickTimeBtn"
+            android:layout_marginTop="10dp"
+            android:text="@string/txt_schedule_sms" />
+    </RelativeLayout>
+
+</LinearLayout>
