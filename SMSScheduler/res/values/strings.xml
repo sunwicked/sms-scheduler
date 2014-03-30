@@ -9,5 +9,7 @@
     <string name="txt_pick_time">Schedule Time</string>
     <string name="txt_pick_date">Schedule Date</string>
     <string name="txt_schedule_sms">Schedule SMS</string>
+    <string name="txt_phone_num_hint">Enter phone number</string>
+    <string name="txt_btn_pickcontact">Pick Contact</string>
 
 </resources>

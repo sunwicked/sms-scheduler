@@ -15,11 +15,30 @@
         android:text="@string/hello_world" />
     
     <EditText 
+        android:id="@+id/phoneNumEdit"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:hint="@string/txt_phone_num_hint"
+        android:layout_below="@id/titleText"
+        android:layout_marginTop="10dp"
+        />
+    <Button 
+        android:id="@+id/pickContactBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@id/phoneNumEdit"
+        android:layout_marginTop="10dp"
+        android:text="@string/txt_btn_pickcontact"
+        android:layout_alignBaseline="@id/phoneNumEdit"
+        android:onClick="readContacts"
+        />
+    
+    <EditText 
         android:id="@+id/smsEdit"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="@string/txt_edit_hint"
-        android:layout_below="@id/titleText"
+        android:layout_below="@id/phoneNumEdit"
         android:layout_marginTop="10dp"
         />
     
