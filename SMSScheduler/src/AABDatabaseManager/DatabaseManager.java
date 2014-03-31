@@ -26,8 +26,17 @@ public class DatabaseManager {
 	private final String TABLE_ROW_PHONENUM = "contact_number";
 	private final String TABLE_ROW_INITIALTIME = "initial_time";
 	private final String TABLE_ROW_SENDTIME = "send_time";
+	Context context;
 
 	// TODO: write the constructor and methods for this class
+
+	public DatabaseManager(Context context) {
+		this.context = context;
+
+		// create or open the database
+		CustomSQLiteOpenHelper helper = new CustomSQLiteOpenHelper(context);
+		this.db = helper.getWritableDatabase();
+	}
 
 	// the beginnings our SQLiteOpenHelper class
 	private class CustomSQLiteOpenHelper extends SQLiteOpenHelper {

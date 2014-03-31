@@ -1,164 +1,108 @@
 package com.android.smsscheduler;
 
-import java.util.GregorianCalendar;
+import java.util.ArrayList;
 
+import AABDatabaseManager.DatabaseManager;
 import android.app.Activity;
-import android.app.AlarmManager;
-import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
-import android.database.Cursor;
-import android.net.Uri;
 import android.os.Bundle;
-import android.provider.ContactsContract;
-import android.provider.ContactsContract.PhoneLookup;
 import android.support.v4.app.FragmentActivity;
-import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.ViewGroup;
+import android.widget.BaseAdapter;
 import android.widget.Button;
-import android.widget.EditText;
-import android.widget.Toast;
+import android.widget.ListView;
+import android.widget.TextView;
 
-import com.android.smsfragments.DatePickerFragment;
-import com.android.smsfragments.TimePickerFragment;
+import com.android.smsDatabase.model.SmsModel;
 
-public class MainActivity extends FragmentActivity
-{
-	Button sendBtn ;
-	EditText smsEdit, phoneNumEdit;
-	String smsStr, phoneNo;
-	String TAG = "MainActivity" ;
-	public static int PICK_CONTACT = 1 ; 
+public class MainActivity extends FragmentActivity {
+	final static String TAG = "MainActivity";
+	final static int SMS_REQ_CODE = 100;
+	ListView listReminder;
+	ArrayList<SmsModel> smsModelList = new ArrayList<SmsModel>();
+	DatabaseManager dm;
 
 	@Override
-	protected void onCreate(Bundle savedInstanceState)
-	{
+	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
-
-		sendBtn = (Button)findViewById(R.id.sendBtn);
-		smsEdit = (EditText)findViewById(R.id.smsEdit);
-		phoneNumEdit = (EditText)findViewById(R.id.phoneNumEdit);
-		smsStr = "";
-		phoneNo = "";
-
-		sendBtn.setOnClickListener(new OnClickListener()
-		{
+		final Button addNewButton = (Button) findViewById(R.id.addNew);
+		listReminder = (ListView) findViewById(R.id.list);
+		listReminder.setAdapter(new CustomListAdapter());
+		dm = new DatabaseManager(this);
+		addNewButton.setOnClickListener(new OnClickListener() {
 
 			@Override
-			public void onClick(View v)
-			{
-				scheduleAlarm();
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				final Intent intent = new Intent(MainActivity.this,
+						AddNewSmsReminder.class);
+				startActivityForResult(intent, SMS_REQ_CODE);
 			}
 		});
 
-
-
 	}
-
-	public void showTimePickerDialog(View view)
-	{
-		android.support.v4.app.DialogFragment timeFragment = new TimePickerFragment();
-		timeFragment.show(getSupportFragmentManager(), "time_fragment");
-
-	}
-
-	public void showDatePickerDialog(View view)
-	{
-		android.support.v4.app.DialogFragment dateFragment = new DatePickerFragment();
-		dateFragment.show(getSupportFragmentManager(), "date_fragment");
-	}
-
-
-
-	public void scheduleAlarm()
-	{
-		try
-		{
-			smsStr = smsEdit.getText().toString();
-
-			Long time = new GregorianCalendar().getTimeInMillis()+60*1000;
-
-			Intent intent = new Intent(MainActivity.this, AlarmReceiver.class);
-
-			Bundle b = new Bundle() ;
-			b.putString(Constants.SMS_STR_KEY, smsStr);
-			b.putString(Constants.PHONE_NO_KEY, phoneNo);
-			intent.putExtras(b);
-
-			AlarmManager alarmMgr = (AlarmManager)getSystemService(Context.ALARM_SERVICE);
-
-			alarmMgr.set(AlarmManager.RTC_WAKEUP,time, PendingIntent.getBroadcast(this,1,  intent,
-					PendingIntent.FLAG_UPDATE_CURRENT));
-			Log.i(TAG, "Alarm Scheduled :"+time);
-
-			Toast.makeText(getApplicationContext(), "Alarm Scheduled ",
-					Toast.LENGTH_LONG).show();
-		}
-		catch(Exception e)
-		{
-			e.printStackTrace();
-			Log.i(TAG, "Exception occured while scheduling alarm");
-		}
-	}
-
-	public void readContacts(View view)
-	{
-		try
-		{
-			Intent cIntent = new Intent(Intent.ACTION_PICK,
-					ContactsContract.Contacts.CONTENT_URI);
-			startActivityForResult(cIntent, PICK_CONTACT);
-		}
-		catch(Exception e)
-		{
-			e.printStackTrace();
-			Log.i(TAG, "Exception while picking contact");
-		}
-	}
-
 
 	@Override
-	protected void onActivityResult(int requestCode, int resultCode, Intent data)
-	{
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		// TODO Auto-generated method stub
 		super.onActivityResult(requestCode, resultCode, data);
 
-		if(data != null)
-		{
-			switch(requestCode)
-			{
+		if (data != null) {
+			switch (requestCode) {
 			case 1:
-				if(resultCode == Activity.RESULT_OK)
-					
-				{
-					Uri contactData = data.getData();
-					Cursor c =  managedQuery(contactData, null, null, null, null);
-					if (c.moveToFirst()) 
-					{
-						String id = c.getString(c.getColumnIndexOrThrow(ContactsContract.Contacts._ID));
+				if (resultCode == Activity.RESULT_OK) {
 
-						String hasPhone = c.getString(c.getColumnIndex(ContactsContract.Contacts.HAS_PHONE_NUMBER));
-
-						if (hasPhone.equalsIgnoreCase("1")) 
-						{
-							Cursor phones = getContentResolver().query( 
-									ContactsContract.CommonDataKinds.Phone.CONTENT_URI,null, 
-									ContactsContract.CommonDataKinds.Phone.CONTACT_ID +" = "+ id, 
-									null, null);
-							phones.moveToFirst();
-							phoneNo = phones.getString(phones.getColumnIndex("data1"));
-							Log.i(TAG, "phone_no: "+phoneNo);
-							
-							phoneNumEdit.setText(phoneNo.toString());
-
-						}
-						String name = c.getString(c.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME));
-						Log.i(TAG, "name: "+name);
-
-					}
 				}
 			}
+		}
+	}
+
+	public class CustomListAdapter extends BaseAdapter {
+		LayoutInflater inflater;
+
+		public CustomListAdapter() {
+			// TODO Auto-generated constructor stub
+			inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+			smsModelList = dm.getAllData();
+		}
+
+		@Override
+		public int getCount() {
+			// TODO Auto-generated method stub
+			return smsModelList.size();
+		}
+
+		@Override
+		public Object getItem(int position) {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public long getItemId(int position) {
+			// TODO Auto-generated method stub
+			return 0;
+		}
+
+		@Override
+		public View getView(int position, View convertView, ViewGroup parent) {
+			View vi = convertView;
+			if (convertView == null)
+				vi = inflater.inflate(R.layout.sms_list_row, null);
+
+			TextView name = (TextView) vi.findViewById(R.id.name);
+			TextView number = (TextView) vi.findViewById(R.id.number);
+			TextView message = (TextView) vi.findViewById(R.id.message);
+			SmsModel smsObj = smsModelList.get(position);
+			name.setText(smsObj.getContactName());
+			number.setText(smsObj.getContactNumber());
+			message.setText(smsObj.getMessage());
+			return vi;
 		}
 
 	}
