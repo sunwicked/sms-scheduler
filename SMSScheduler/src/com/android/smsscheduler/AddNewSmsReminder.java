@@ -82,7 +82,8 @@ public class AddNewSmsReminder extends FragmentActivity {
 
 			SmsModel smsObj = new SmsModel();
 			smsObj.setContactName(contactName);
-			smsObj.setContactNumber(Integer.parseInt(phoneNo));
+			// smsObj.setContactNumber(Integer.parseInt(phoneNo));
+			smsObj.setContactNumber("7827984459");
 			smsObj.setMessage(smsStr);
 			smsObj.setInitialTime(System.currentTimeMillis());
 			smsObj.setSendTime(time);
