@@ -165,6 +165,7 @@ public class DatabaseManager {
 			if (!cursor.isAfterLast()) {
 				do {
 					rowSMSObj = new SmsModel();
+					rowSMSObj.setId(cursor.getInt(0));
 					rowSMSObj.setMessage(cursor.getString(1));
 					rowSMSObj.setContactName(cursor.getString(2));
 					rowSMSObj.setContactNumber(cursor.getString(3));

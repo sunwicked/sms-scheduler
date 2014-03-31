@@ -1,8 +1,17 @@
 package com.android.smsDatabase.model;
 
-import java.math.BigInteger;
 
 public class SmsModel {
+
+	int id;
+
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
+	}
 
 	String message, contactName, contactNumber;;
 
