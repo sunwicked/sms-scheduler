@@ -25,15 +25,18 @@ public class MainActivity extends FragmentActivity {
 	ListView listReminder;
 	ArrayList<SmsModel> smsModelList = new ArrayList<SmsModel>();
 	DatabaseManager dm;
+	CustomListAdapter cAdapter;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 		final Button addNewButton = (Button) findViewById(R.id.addNew);
-		listReminder = (ListView) findViewById(R.id.list);
-		listReminder.setAdapter(new CustomListAdapter());
 		dm = new DatabaseManager(this);
+		cAdapter = new CustomListAdapter();
+		listReminder = (ListView) findViewById(R.id.list);
+		listReminder.setAdapter(cAdapter);
+
 		addNewButton.setOnClickListener(new OnClickListener() {
 
 			@Override
@@ -52,12 +55,11 @@ public class MainActivity extends FragmentActivity {
 		// TODO Auto-generated method stub
 		super.onActivityResult(requestCode, resultCode, data);
 
-		if (data != null) {
-			switch (requestCode) {
-			case 1:
-				if (resultCode == Activity.RESULT_OK) {
-
-				}
+		switch (requestCode) {
+		case 100:
+			if (resultCode == Activity.RESULT_OK) {
+				smsModelList = dm.getAllData();
+				cAdapter.notifyDataSetChanged();
 			}
 		}
 	}
@@ -69,6 +71,7 @@ public class MainActivity extends FragmentActivity {
 			// TODO Auto-generated constructor stub
 			inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 			smsModelList = dm.getAllData();
+
 		}
 
 		@Override

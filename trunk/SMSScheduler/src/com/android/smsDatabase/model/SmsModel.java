@@ -1,10 +1,12 @@
 package com.android.smsDatabase.model;
 
+import java.math.BigInteger;
+
 public class SmsModel {
 
-	String message, contactName;
-	int contactNumber;
-	Long sendTime, initialTime;
+	String message, contactName, contactNumber;;
+
+	long sendTime, initialTime;
 
 	public String getMessage() {
 		return message;
@@ -22,11 +24,11 @@ public class SmsModel {
 		this.contactName = contactName;
 	}
 
-	public int getContactNumber() {
+	public String getContactNumber() {
 		return contactNumber;
 	}
 
-	public void setContactNumber(int contactNumber) {
+	public void setContactNumber(String contactNumber) {
 		this.contactNumber = contactNumber;
 	}
 
@@ -34,7 +36,7 @@ public class SmsModel {
 		return sendTime;
 	}
 
-	public void setSendTime(Long sendTime) {
+	public void setSendTime(long sendTime) {
 		this.sendTime = sendTime;
 	}
 
@@ -42,7 +44,7 @@ public class SmsModel {
 		return initialTime;
 	}
 
-	public void setInitialTime(Long settingTime) {
+	public void setInitialTime(long settingTime) {
 		this.initialTime = settingTime;
 	}
 

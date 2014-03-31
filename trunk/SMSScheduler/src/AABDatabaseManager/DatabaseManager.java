@@ -52,9 +52,9 @@ public class DatabaseManager {
 			String newTableQueryString = "create table " + TABLE_NAME + " ("
 					+ TABLE_ROW_ID
 					+ " integer primary key autoincrement not null,"
-					+ TABLE_ROW_MSG + " text" + TABLE_ROW_NAME + " text"
-					+ TABLE_ROW_PHONENUM + " integer not null"
-					+ TABLE_ROW_INITIALTIME + " long" + TABLE_ROW_SENDTIME
+					+ TABLE_ROW_MSG + " text," + TABLE_ROW_NAME + " text,"
+					+ TABLE_ROW_PHONENUM + " text not null,"
+					+ TABLE_ROW_INITIALTIME + " long," + TABLE_ROW_SENDTIME
 					+ " long" + ");";
 
 			// execute the query string to the database.
@@ -132,11 +132,12 @@ public class DatabaseManager {
 					TABLE_ROW_MSG, TABLE_ROW_NAME, TABLE_ROW_PHONENUM,
 					TABLE_ROW_INITIALTIME, TABLE_ROW_SENDTIME }, TABLE_ROW_ID
 					+ "=" + rowID, null, null, null, null, null);
+			cursor.moveToFirst();
 			if (!cursor.isAfterLast()) {
 				do {
 					rowSMSObj.setMessage(cursor.getString(1));
 					rowSMSObj.setContactName(cursor.getString(2));
-					rowSMSObj.setContactNumber(cursor.getInt(3));
+					rowSMSObj.setContactNumber(cursor.getString(3));
 					rowSMSObj.setInitialTime(cursor.getLong(4));
 					rowSMSObj.setSendTime(cursor.getLong(5));
 				} while (cursor.moveToNext()); // try to move the cursor's
@@ -160,12 +161,13 @@ public class DatabaseManager {
 					TABLE_ROW_MSG, TABLE_ROW_NAME, TABLE_ROW_PHONENUM,
 					TABLE_ROW_INITIALTIME, TABLE_ROW_SENDTIME }, null, null,
 					null, null, null);
+			cursor.moveToFirst();
 			if (!cursor.isAfterLast()) {
 				do {
 					rowSMSObj = new SmsModel();
 					rowSMSObj.setMessage(cursor.getString(1));
 					rowSMSObj.setContactName(cursor.getString(2));
-					rowSMSObj.setContactNumber(cursor.getInt(3));
+					rowSMSObj.setContactNumber(cursor.getString(3));
 					rowSMSObj.setInitialTime(cursor.getLong(4));
 					rowSMSObj.setSendTime(cursor.getLong(5));
 					allRowsObj.add(rowSMSObj);

@@ -21,7 +21,8 @@
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:layout_below="@id/addNew"
-        android:divider="@android:color/darker_gray" >
+        android:divider="@android:color/darker_gray" 
+        android:dividerHeight="1dp">
     </ListView>
 
 </RelativeLayout>
