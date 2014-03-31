@@ -10,7 +10,7 @@ public class SendSmsService extends IntentService
 
 	String phoneNo = "9711082272";
 	String smsStr = "This is msg from application which is  scheduled ";
-	static String TAG = "AlaramReceiver";
+	static String TAG = "SendSmsService";
 
 	// km5Aw8he9sj6
 
