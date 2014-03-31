@@ -1,10 +1,7 @@
 package com.android.smsscheduler;
 
+import java.util.Calendar;
 import java.util.GregorianCalendar;
-
-import com.android.smsDatabase.model.SmsModel;
-import com.android.smsfragments.DatePickerFragment;
-import com.android.smsfragments.TimePickerFragment;
 
 import AABDatabaseManager.DatabaseManager;
 import android.app.Activity;
@@ -20,15 +17,23 @@ import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.support.v4.app.FragmentActivity;
 import android.text.TextUtils;
+import android.text.format.DateFormat;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
-public class AddNewSmsReminder extends FragmentActivity
-{
+import com.android.smsDatabase.model.SmsModel;
+import com.android.smsfragments.DatePickerFragment;
+import com.android.smsfragments.DatePickerFragment.DatePickedListener;
+import com.android.smsfragments.TimePickerFragment;
+import com.android.smsfragments.TimePickerFragment.TimePickedListener;
+
+public class AddNewSmsReminder extends FragmentActivity implements
+		TimePickedListener, DatePickedListener {
 
 	Button sendBtn;
 	EditText smsEdit, phoneNumEdit;
@@ -36,47 +41,46 @@ public class AddNewSmsReminder extends FragmentActivity
 	String TAG = "AddNewSmsReminder";
 	public static int PICK_CONTACT = 1;
 	DatabaseManager dm;
+	Long time, day;
+	TextView showDate, showTime;
 
 	@Override
-	protected void onCreate(Bundle savedInstanceState)
-	{
-		
+	protected void onCreate(Bundle savedInstanceState) {
+
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.add_new_layout);
 
 		sendBtn = (Button) findViewById(R.id.sendBtn);
 		smsEdit = (EditText) findViewById(R.id.smsEdit);
 		phoneNumEdit = (EditText) findViewById(R.id.phoneNumEdit);
+		showDate = (TextView) findViewById(R.id.showDate);
+		showTime = (TextView) findViewById(R.id.showTime);
 		smsStr = "";
 		phoneNo = "";
 		dm = new DatabaseManager(this);
-
-		sendBtn.setOnClickListener(new OnClickListener()
-		{
+		time = new GregorianCalendar().getTimeInMillis() + 60 * 1000;
+		day = 0L;
+		sendBtn.setOnClickListener(new OnClickListener() {
 
 			@Override
-			public void onClick(View v)
-			{
+			public void onClick(View v) {
 				scheduleAlarm();
 			}
 		});
 	}
 
-	public void showTimePickerDialog(View view)
-	{
+	public void showTimePickerDialog(View view) {
 		android.support.v4.app.DialogFragment timeFragment = new TimePickerFragment();
 		timeFragment.show(getSupportFragmentManager(), "time_fragment");
 
 	}
 
-	public void showDatePickerDialog(View view)
-	{
+	public void showDatePickerDialog(View view) {
 		android.support.v4.app.DialogFragment dateFragment = new DatePickerFragment();
 		dateFragment.show(getSupportFragmentManager(), "date_fragment");
 	}
 
-	public void scheduleAlarm()
-	{
+	public void scheduleAlarm() {
 		if (TextUtils.isEmpty(smsEdit.getText().toString())
 				|| TextUtils.isEmpty(phoneNumEdit.getText().toString()))
 
@@ -87,24 +91,17 @@ public class AddNewSmsReminder extends FragmentActivity
 			alertDialogBuilder.setMessage(
 					"Please fill phone number and message").setCancelable(true);
 			alertDialogBuilder.setNegativeButton("OK",
-					new DialogInterface.OnClickListener()
-					{
-						public void onClick(DialogInterface dialog, int id)
-						{
+					new DialogInterface.OnClickListener() {
+						public void onClick(DialogInterface dialog, int id) {
 							// if this button is clicked, just close
 							// the dialog box and do nothing
 							dialog.cancel();
 						}
 					});
 			alertDialogBuilder.show();
-		}
-		else
-		{
-			try
-			{
+		} else {
+			try {
 				smsStr = smsEdit.getText().toString();
-
-				Long time = new GregorianCalendar().getTimeInMillis() + 60 * 1000;
 
 				Intent intent = new Intent(AddNewSmsReminder.this,
 						AlarmReceiver.class);
@@ -113,6 +110,8 @@ public class AddNewSmsReminder extends FragmentActivity
 				b.putString(Constants.SMS_STR_KEY, smsStr);
 				b.putString(Constants.PHONE_NO_KEY, phoneNo);
 				intent.putExtras(b);
+
+				time = day + time - System.currentTimeMillis();
 
 				SmsModel smsObj = new SmsModel();
 				smsObj.setContactName(contactName);
@@ -131,52 +130,40 @@ public class AddNewSmsReminder extends FragmentActivity
 
 				Toast.makeText(getApplicationContext(), "Alarm Scheduled ",
 						Toast.LENGTH_LONG).show();
-			}
-			catch (Exception e)
-			{
+			} catch (Exception e) {
 				e.printStackTrace();
 				Log.i(TAG, "Exception occured while scheduling alarm");
-			}
-			finally
-			{
+			} finally {
 				setResult(RESULT_OK);
 				finish();
 			}
 		}
 	}
 
-	public void readContacts(View view)
-	{
-		try
-		{
+	public void readContacts(View view) {
+		try {
 			Intent cIntent = new Intent(Intent.ACTION_PICK,
 					ContactsContract.Contacts.CONTENT_URI);
 			startActivityForResult(cIntent, PICK_CONTACT);
-		}
-		catch (Exception e)
-		{
+		} catch (Exception e) {
 			e.printStackTrace();
 			Log.i(TAG, "Exception while picking contact");
 		}
 	}
 
 	@Override
-	protected void onActivityResult(int requestCode, int resultCode, Intent data)
-	{
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		super.onActivityResult(requestCode, resultCode, data);
 
-		if (data != null)
-		{
-			switch (requestCode)
-			{
+		if (data != null) {
+			switch (requestCode) {
 			case 1:
 				if (resultCode == Activity.RESULT_OK)
 
 				{
 					Uri contactData = data.getData();
 					Cursor c = managedQuery(contactData, null, null, null, null);
-					if (c.moveToFirst())
-					{
+					if (c.moveToFirst()) {
 						String id = c
 								.getString(c
 										.getColumnIndexOrThrow(ContactsContract.Contacts._ID));
@@ -185,8 +172,7 @@ public class AddNewSmsReminder extends FragmentActivity
 								.getString(c
 										.getColumnIndex(ContactsContract.Contacts.HAS_PHONE_NUMBER));
 
-						if (hasPhone.equalsIgnoreCase("1"))
-						{
+						if (hasPhone.equalsIgnoreCase("1")) {
 							Cursor phones = getContentResolver()
 									.query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
 											null,
@@ -213,5 +199,20 @@ public class AddNewSmsReminder extends FragmentActivity
 			}
 		}
 
+	}
+
+	@Override
+	public void onTimePicked(Calendar cTime) {
+		// TODO Auto-generated method stb
+		time = cTime.getTimeInMillis();
+
+		showTime.setText(DateFormat.format("h:mm a", time));
+	}
+
+	@Override
+	public void onDatePicked(Calendar dTime) {
+
+		day = dTime.getTimeInMillis();
+		showDate.setText(DateFormat.format("d/M/y", dTime));
 	}
 }
