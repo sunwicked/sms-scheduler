@@ -5,14 +5,17 @@ import java.util.GregorianCalendar;
 import AABDatabaseManager.DatabaseManager;
 import android.app.Activity;
 import android.app.AlarmManager;
+import android.app.AlertDialog;
 import android.app.PendingIntent;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.support.v4.app.FragmentActivity;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -67,43 +70,61 @@ public class AddNewSmsReminder extends FragmentActivity {
 	}
 
 	public void scheduleAlarm() {
-		try {
-			smsStr = smsEdit.getText().toString();
+		if (TextUtils.isEmpty(smsEdit.getText().toString())
+				|| TextUtils.isEmpty(phoneNumEdit.getText().toString()))
 
-			Long time = new GregorianCalendar().getTimeInMillis() + 60 * 1000;
+		{
+			AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
+					this);
+			alertDialogBuilder.setTitle("Empty fields");
+			alertDialogBuilder.setMessage(
+					"Please fill phone number and message").setCancelable(true);
+			alertDialogBuilder.setNegativeButton("OK",
+					new DialogInterface.OnClickListener() {
+						public void onClick(DialogInterface dialog, int id) {
+							// if this button is clicked, just close
+							// the dialog box and do nothing
+							dialog.cancel();
+						}
+					});
+		} else {
+			try {
+				smsStr = smsEdit.getText().toString();
 
-			Intent intent = new Intent(AddNewSmsReminder.this,
-					AlarmReceiver.class);
+				Long time = new GregorianCalendar().getTimeInMillis() + 60 * 1000;
 
-			Bundle b = new Bundle();
-			b.putString(Constants.SMS_STR_KEY, smsStr);
-			b.putString(Constants.PHONE_NO_KEY, phoneNo);
-			intent.putExtras(b);
+				Intent intent = new Intent(AddNewSmsReminder.this,
+						AlarmReceiver.class);
 
-			SmsModel smsObj = new SmsModel();
-			smsObj.setContactName(contactName);
-			// smsObj.setContactNumber(Integer.parseInt(phoneNo));
-			smsObj.setContactNumber("7827984459");
-			smsObj.setMessage(smsStr);
-			smsObj.setInitialTime(System.currentTimeMillis());
-			smsObj.setSendTime(time);
-			dm.addRow(smsObj);
+				Bundle b = new Bundle();
+				b.putString(Constants.SMS_STR_KEY, smsStr);
+				b.putString(Constants.PHONE_NO_KEY, phoneNo);
+				intent.putExtras(b);
 
-			AlarmManager alarmMgr = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+				SmsModel smsObj = new SmsModel();
+				smsObj.setContactName(contactName);
+				smsObj.setContactNumber(phoneNo);
+				smsObj.setMessage(smsStr);
+				smsObj.setInitialTime(System.currentTimeMillis());
+				smsObj.setSendTime(time);
+				dm.addRow(smsObj);
 
-			alarmMgr.set(AlarmManager.RTC_WAKEUP, time, PendingIntent
-					.getBroadcast(this, 1, intent,
-							PendingIntent.FLAG_UPDATE_CURRENT));
-			Log.i(TAG, "Alarm Scheduled :" + time);
+				AlarmManager alarmMgr = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
 
-			Toast.makeText(getApplicationContext(), "Alarm Scheduled ",
-					Toast.LENGTH_LONG).show();
-		} catch (Exception e) {
-			e.printStackTrace();
-			Log.i(TAG, "Exception occured while scheduling alarm");
-		} finally {
-			setResult(RESULT_OK);
-			finish();
+				alarmMgr.set(AlarmManager.RTC_WAKEUP, time, PendingIntent
+						.getBroadcast(this, 1, intent,
+								PendingIntent.FLAG_UPDATE_CURRENT));
+				Log.i(TAG, "Alarm Scheduled :" + time);
+
+				Toast.makeText(getApplicationContext(), "Alarm Scheduled ",
+						Toast.LENGTH_LONG).show();
+			} catch (Exception e) {
+				e.printStackTrace();
+				Log.i(TAG, "Exception occured while scheduling alarm");
+			} finally {
+				setResult(RESULT_OK);
+				finish();
+			}
 		}
 	}
 
@@ -150,7 +171,9 @@ public class AddNewSmsReminder extends FragmentActivity {
 									.getColumnIndex("data1"));
 							Log.i(TAG, "phone_no: " + phoneNo);
 
-							contactName = "fix this";
+							contactName = phones
+									.getString(phones
+											.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME));
 							phoneNumEdit.setText(phoneNo.toString());
 
 						}
