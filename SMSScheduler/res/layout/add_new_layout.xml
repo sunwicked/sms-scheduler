@@ -57,7 +57,7 @@
         android:layout_alignParentLeft="true"
         android:layout_below="@id/pickTimeBtn"
         android:layout_margin="10dp"
-        android:text="dummy"
+        android:text="--:--"
         android:textStyle="bold" />
 
     <TextView
@@ -67,7 +67,7 @@
         android:layout_alignParentRight="true"
         android:layout_below="@id/pickDateBtn"
         android:layout_margin="10dp"
-        android:text="dummy"
+        android:text="--/--/--"
         android:textStyle="bold" />
 
     <Button
