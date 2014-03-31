@@ -19,7 +19,8 @@ import android.widget.TextView;
 
 import com.android.smsDatabase.model.SmsModel;
 
-public class MainActivity extends FragmentActivity {
+public class MainActivity extends FragmentActivity
+{
 	final static String TAG = "MainActivity";
 	final static int SMS_REQ_CODE = 100;
 	ListView listReminder;
@@ -28,7 +29,8 @@ public class MainActivity extends FragmentActivity {
 	CustomListAdapter cAdapter;
 
 	@Override
-	protected void onCreate(Bundle savedInstanceState) {
+	protected void onCreate(Bundle savedInstanceState)
+	{
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 		final Button addNewButton = (Button) findViewById(R.id.addNew);
@@ -37,10 +39,12 @@ public class MainActivity extends FragmentActivity {
 		listReminder = (ListView) findViewById(R.id.list);
 		listReminder.setAdapter(cAdapter);
 
-		addNewButton.setOnClickListener(new OnClickListener() {
+		addNewButton.setOnClickListener(new OnClickListener()
+		{
 
 			@Override
-			public void onClick(View v) {
+			public void onClick(View v)
+			{
 				// TODO Auto-generated method stub
 				final Intent intent = new Intent(MainActivity.this,
 						AddNewSmsReminder.class);
@@ -51,23 +55,28 @@ public class MainActivity extends FragmentActivity {
 	}
 
 	@Override
-	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+	protected void onActivityResult(int requestCode, int resultCode, Intent data)
+	{
 		// TODO Auto-generated method stub
 		super.onActivityResult(requestCode, resultCode, data);
 
-		switch (requestCode) {
+		switch (requestCode)
+		{
 		case 100:
-			if (resultCode == Activity.RESULT_OK) {
+			if (resultCode == Activity.RESULT_OK)
+			{
 				smsModelList = dm.getAllData();
 				cAdapter.notifyDataSetChanged();
 			}
 		}
 	}
 
-	public class CustomListAdapter extends BaseAdapter {
+	public class CustomListAdapter extends BaseAdapter
+	{
 		LayoutInflater inflater;
 
-		public CustomListAdapter() {
+		public CustomListAdapter()
+		{
 			// TODO Auto-generated constructor stub
 			inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 			smsModelList = dm.getAllData();
@@ -75,25 +84,29 @@ public class MainActivity extends FragmentActivity {
 		}
 
 		@Override
-		public int getCount() {
+		public int getCount()
+		{
 			// TODO Auto-generated method stub
 			return smsModelList.size();
 		}
 
 		@Override
-		public Object getItem(int position) {
+		public Object getItem(int position)
+		{
 			// TODO Auto-generated method stub
 			return null;
 		}
 
 		@Override
-		public long getItemId(int position) {
+		public long getItemId(int position)
+		{
 			// TODO Auto-generated method stub
 			return 0;
 		}
 
 		@Override
-		public View getView(int position, View convertView, ViewGroup parent) {
+		public View getView(int position, View convertView, ViewGroup parent)
+		{
 			View vi = convertView;
 			if (convertView == null)
 				vi = inflater.inflate(R.layout.sms_list_row, null);
