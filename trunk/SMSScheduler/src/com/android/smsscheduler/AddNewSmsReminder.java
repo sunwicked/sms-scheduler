@@ -111,14 +111,14 @@ public class AddNewSmsReminder extends FragmentActivity implements
 				b.putString(Constants.PHONE_NO_KEY, phoneNo);
 				intent.putExtras(b);
 
-				time = day + time - System.currentTimeMillis();
+				long sendTime = day + time - System.currentTimeMillis();
 
 				SmsModel smsObj = new SmsModel();
 				smsObj.setContactName(contactName);
 				smsObj.setContactNumber(phoneNo);
 				smsObj.setMessage(smsStr);
 				smsObj.setInitialTime(System.currentTimeMillis());
-				smsObj.setSendTime(time);
+				smsObj.setSendTime(sendTime);
 				dm.addRow(smsObj);
 
 				AlarmManager alarmMgr = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
