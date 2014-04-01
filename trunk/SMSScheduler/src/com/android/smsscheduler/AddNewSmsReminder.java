@@ -35,14 +35,14 @@ import com.android.smsfragments.TimePickerFragment.TimePickedListener;
 public class AddNewSmsReminder extends FragmentActivity implements
 		TimePickedListener, DatePickedListener {
 
-	Button sendBtn;
-	EditText smsEdit, phoneNumEdit;
-	String contactName, smsStr, phoneNo;
-	String TAG = "AddNewSmsReminder";
+	private Button sendBtn;
+	private EditText smsEdit, phoneNumEdit;
+	private String contactName, smsStr, phoneNo;
+	private String TAG = "AddNewSmsReminder";
 	public static int PICK_CONTACT = 1;
-	DatabaseManager dm;
-	Long time, day;
-	TextView showDate, showTime;
+	private DatabaseManager dm;
+	private Long time, day;
+	private TextView showDate, showTime;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -50,16 +50,7 @@ public class AddNewSmsReminder extends FragmentActivity implements
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.add_new_layout);
 
-		sendBtn = (Button) findViewById(R.id.sendBtn);
-		smsEdit = (EditText) findViewById(R.id.smsEdit);
-		phoneNumEdit = (EditText) findViewById(R.id.phoneNumEdit);
-		showDate = (TextView) findViewById(R.id.showDate);
-		showTime = (TextView) findViewById(R.id.showTime);
-		smsStr = "";
-		phoneNo = "";
-		dm = new DatabaseManager(this);
-		time = new GregorianCalendar().getTimeInMillis() + 60 * 1000;
-		day = 0L;
+		init();
 		sendBtn.setOnClickListener(new OnClickListener() {
 
 			@Override
@@ -69,17 +60,11 @@ public class AddNewSmsReminder extends FragmentActivity implements
 		});
 	}
 
-	public void showTimePickerDialog(View view) {
-		android.support.v4.app.DialogFragment timeFragment = new TimePickerFragment();
-		timeFragment.show(getSupportFragmentManager(), "time_fragment");
-
-	}
-
-	public void showDatePickerDialog(View view) {
-		android.support.v4.app.DialogFragment dateFragment = new DatePickerFragment();
-		dateFragment.show(getSupportFragmentManager(), "date_fragment");
-	}
-
+	/**
+	 * Schedule alarm method sets up alarm for sending sms at stipulate time
+	 * Checks : If phone number is empty or message is empty
+	 * 
+	 */
 	public void scheduleAlarm() {
 		if (TextUtils.isEmpty(smsEdit.getText().toString())
 				|| TextUtils.isEmpty(phoneNumEdit.getText().toString()))
@@ -201,12 +186,36 @@ public class AddNewSmsReminder extends FragmentActivity implements
 
 	}
 
+	private void init() {
+		sendBtn = (Button) findViewById(R.id.sendBtn);
+		smsEdit = (EditText) findViewById(R.id.smsEdit);
+		phoneNumEdit = (EditText) findViewById(R.id.phoneNumEdit);
+		showDate = (TextView) findViewById(R.id.showDate);
+		showTime = (TextView) findViewById(R.id.showTime);
+		smsStr = "";
+		phoneNo = "";
+		dm = new DatabaseManager(this);
+		time = new GregorianCalendar().getTimeInMillis() + 60 * 1000;
+		day = 0L;
+	}
+
+	public void showTimePickerDialog(View view) {
+		android.support.v4.app.DialogFragment timeFragment = new TimePickerFragment();
+		timeFragment.show(getSupportFragmentManager(), "time_fragment");
+
+	}
+
 	@Override
 	public void onTimePicked(Calendar cTime) {
 		// TODO Auto-generated method stb
 		time = cTime.getTimeInMillis();
 
 		showTime.setText(DateFormat.format("h:mm a", time));
+	}
+
+	public void showDatePickerDialog(View view) {
+		android.support.v4.app.DialogFragment dateFragment = new DatePickerFragment();
+		dateFragment.show(getSupportFragmentManager(), "date_fragment");
 	}
 
 	@Override
