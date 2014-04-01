@@ -12,11 +12,12 @@
 
     <Button
         android:id="@+id/pickContactBtn"
-        android:layout_width="wrap_content"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_alignBaseline="@id/phoneNumEdit"
         android:layout_marginTop="10dp"
         android:layout_toRightOf="@id/phoneNumEdit"
+        android:background="@drawable/round_button"
         android:onClick="readContacts"
         android:text="@string/txt_btn_pickcontact" />
 
@@ -28,12 +29,24 @@
         android:layout_marginTop="10dp"
         android:hint="@string/txt_edit_hint" />
 
+    <View
+        android:id="@+id/seperator"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_below="@id/smsEdit"
+        android:layout_centerHorizontal="true" />
+
     <Button
         android:id="@+id/pickTimeBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
         android:layout_below="@id/smsEdit"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="10dp"
         android:layout_marginTop="10dp"
+        android:layout_toLeftOf="@id/seperator"
+        android:background="@drawable/round_button"
         android:onClick="showTimePickerDialog"
         android:text="@string/txt_pick_time" />
 
@@ -46,7 +59,8 @@
         android:layout_marginLeft="8dp"
         android:layout_marginRight="10dp"
         android:layout_marginTop="10dp"
-        android:layout_toRightOf="@id/pickTimeBtn"
+        android:layout_toRightOf="@id/seperator"
+        android:background="@drawable/round_button"
         android:onClick="showDatePickerDialog"
         android:text="@string/txt_pick_date" />
 
@@ -75,7 +89,10 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/pickTimeBtn"
-        android:layout_marginTop="30dp"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp"
+        android:layout_marginTop="50dp"
+        android:background="@drawable/round_button"
         android:text="@string/txt_schedule_sms" />
 
 </RelativeLayout>
