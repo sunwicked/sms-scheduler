@@ -8,7 +8,8 @@
         android:layout_width="200dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
-        android:hint="@string/txt_phone_num_hint" />
+        android:hint="@string/txt_phone_num_hint"
+        android:inputType="phone" />
 
     <Button
         android:id="@+id/pickContactBtn"
