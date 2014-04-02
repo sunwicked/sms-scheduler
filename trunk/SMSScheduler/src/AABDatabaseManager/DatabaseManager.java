@@ -26,6 +26,8 @@ public class DatabaseManager {
 	private final String TABLE_ROW_PHONENUM = "contact_number";
 	private final String TABLE_ROW_INITIALTIME = "initial_time";
 	private final String TABLE_ROW_SENDTIME = "send_time";
+	private final String TABLE_ROW_CONTACTID = "contact_id";
+	private final String TABLE_ROW_PHOTOID = "photo_id";
 	Context context;
 
 	// TODO: write the constructor and methods for this class
@@ -55,7 +57,8 @@ public class DatabaseManager {
 					+ TABLE_ROW_MSG + " text," + TABLE_ROW_NAME + " text,"
 					+ TABLE_ROW_PHONENUM + " text not null,"
 					+ TABLE_ROW_INITIALTIME + " long," + TABLE_ROW_SENDTIME
-					+ " long" + ");";
+					+ " long," + TABLE_ROW_CONTACTID + " long,"
+					+ TABLE_ROW_PHOTOID + " long" + ");";
 
 			// execute the query string to the database.
 			db.execSQL(newTableQueryString);
@@ -73,17 +76,7 @@ public class DatabaseManager {
 	}
 
 	public void addRow(SmsModel smsObj) {
-		// this is a key value pair holder used by android's SQLite functions
-		ContentValues values = new ContentValues();
-
-		// this is how you add a value to a ContentValues object
-		// we are passing in a key string and a value string each time
-		values.put(TABLE_ROW_NAME, smsObj.getContactName());
-		values.put(TABLE_ROW_PHONENUM, smsObj.getContactNumber());
-		values.put(TABLE_ROW_MSG, smsObj.getMessage());
-		values.put(TABLE_ROW_INITIALTIME, smsObj.getInitialTime());
-		values.put(TABLE_ROW_SENDTIME, smsObj.getSendTime());
-
+		ContentValues values = prepareData(smsObj);
 		// ask the database object to insert the new data
 		try {
 			db.insert(TABLE_NAME, null, values);
@@ -106,13 +99,7 @@ public class DatabaseManager {
 
 	public void updateRow(int rowID, SmsModel smsObj) {
 		// this is a key value pair holder used by android's SQLite functions
-		ContentValues values = new ContentValues();
-		values.put(TABLE_ROW_NAME, smsObj.getContactName());
-		values.put(TABLE_ROW_PHONENUM, smsObj.getContactNumber());
-		values.put(TABLE_ROW_MSG, smsObj.getMessage());
-		values.put(TABLE_ROW_INITIALTIME, smsObj.getInitialTime());
-		values.put(TABLE_ROW_SENDTIME, smsObj.getSendTime());
-
+		ContentValues values = prepareData(smsObj);
 		// ask the database object to update the database row of given rowID
 		try {
 			db.update(TABLE_NAME, values, TABLE_ROW_ID + "=" + rowID, null);
@@ -120,6 +107,18 @@ public class DatabaseManager {
 			Log.e("DB Error", e.toString());
 			e.printStackTrace();
 		}
+	}
+
+	private ContentValues prepareData(SmsModel smsObj) {
+		ContentValues values = new ContentValues();
+		values.put(TABLE_ROW_NAME, smsObj.getContactName());
+		values.put(TABLE_ROW_PHONENUM, smsObj.getContactNumber());
+		values.put(TABLE_ROW_MSG, smsObj.getMessage());
+		values.put(TABLE_ROW_INITIALTIME, smsObj.getInitialTime());
+		values.put(TABLE_ROW_SENDTIME, smsObj.getSendTime());
+		values.put(TABLE_ROW_CONTACTID, smsObj.getContact_id());
+		values.put(TABLE_ROW_PHOTOID, smsObj.getPhoto_id());
+		return values;
 	}
 
 	public SmsModel getRowAsObject(int rowID) {
@@ -130,16 +129,13 @@ public class DatabaseManager {
 
 			cursor = db.query(TABLE_NAME, new String[] { TABLE_ROW_ID,
 					TABLE_ROW_MSG, TABLE_ROW_NAME, TABLE_ROW_PHONENUM,
-					TABLE_ROW_INITIALTIME, TABLE_ROW_SENDTIME }, TABLE_ROW_ID
+					TABLE_ROW_INITIALTIME, TABLE_ROW_SENDTIME,
+					TABLE_ROW_CONTACTID, TABLE_ROW_PHOTOID }, TABLE_ROW_ID
 					+ "=" + rowID, null, null, null, null, null);
 			cursor.moveToFirst();
 			if (!cursor.isAfterLast()) {
 				do {
-					rowSMSObj.setMessage(cursor.getString(1));
-					rowSMSObj.setContactName(cursor.getString(2));
-					rowSMSObj.setContactNumber(cursor.getString(3));
-					rowSMSObj.setInitialTime(cursor.getLong(4));
-					rowSMSObj.setSendTime(cursor.getLong(5));
+					prepareSendObject(rowSMSObj, cursor);
 				} while (cursor.moveToNext()); // try to move the cursor's
 												// pointer forward one position.
 			}
@@ -151,6 +147,16 @@ public class DatabaseManager {
 		return rowSMSObj;
 	}
 
+	private void prepareSendObject(SmsModel rowSMSObj, Cursor cursor) {
+		rowSMSObj.setMessage(cursor.getString(1));
+		rowSMSObj.setContactName(cursor.getString(2));
+		rowSMSObj.setContactNumber(cursor.getString(3));
+		rowSMSObj.setInitialTime(cursor.getLong(4));
+		rowSMSObj.setSendTime(cursor.getLong(5));
+		rowSMSObj.setContact_id(cursor.getLong(6));
+		rowSMSObj.setPhoto_id(cursor.getLong(7));
+	}
+
 	public ArrayList<SmsModel> getAllData() {
 		ArrayList<SmsModel> allRowsObj = new ArrayList<SmsModel>();
 		Cursor cursor;
@@ -159,18 +165,15 @@ public class DatabaseManager {
 
 			cursor = db.query(TABLE_NAME, new String[] { TABLE_ROW_ID,
 					TABLE_ROW_MSG, TABLE_ROW_NAME, TABLE_ROW_PHONENUM,
-					TABLE_ROW_INITIALTIME, TABLE_ROW_SENDTIME }, null, null,
-					null, null, null);
+					TABLE_ROW_INITIALTIME, TABLE_ROW_SENDTIME,
+					TABLE_ROW_CONTACTID, TABLE_ROW_PHOTOID }, null, null, null,
+					null, null);
 			cursor.moveToFirst();
 			if (!cursor.isAfterLast()) {
 				do {
 					rowSMSObj = new SmsModel();
 					rowSMSObj.setId(cursor.getInt(0));
-					rowSMSObj.setMessage(cursor.getString(1));
-					rowSMSObj.setContactName(cursor.getString(2));
-					rowSMSObj.setContactNumber(cursor.getString(3));
-					rowSMSObj.setInitialTime(cursor.getLong(4));
-					rowSMSObj.setSendTime(cursor.getLong(5));
+					prepareSendObject(rowSMSObj, cursor);
 					allRowsObj.add(rowSMSObj);
 
 				} while (cursor.moveToNext()); // try to move the cursor's
