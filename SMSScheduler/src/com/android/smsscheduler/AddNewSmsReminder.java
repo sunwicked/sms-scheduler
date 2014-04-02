@@ -1,5 +1,7 @@
 package com.android.smsscheduler;
 
+import java.io.ByteArrayInputStream;
+import java.sql.Blob;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
@@ -41,8 +43,10 @@ public class AddNewSmsReminder extends FragmentActivity implements
 	private String TAG = "AddNewSmsReminder";
 	public static int PICK_CONTACT = 1;
 	private DatabaseManager dm;
-	private Long time, day;
+
+	private long contactId, photoId;
 	private TextView showDate, showTime;
+	private Calendar calSet;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -96,22 +100,23 @@ public class AddNewSmsReminder extends FragmentActivity implements
 				b.putString(Constants.PHONE_NO_KEY, phoneNo);
 				intent.putExtras(b);
 
-				long sendTime = day + time - System.currentTimeMillis();
+				long setTime = calSet.getTimeInMillis();
 
 				SmsModel smsObj = new SmsModel();
 				smsObj.setContactName(contactName);
 				smsObj.setContactNumber(phoneNo);
 				smsObj.setMessage(smsStr);
 				smsObj.setInitialTime(System.currentTimeMillis());
-				smsObj.setSendTime(sendTime);
+				smsObj.setSendTime(calSet.getTimeInMillis());
+				smsObj.setContact_id(contactId);
+				smsObj.setPhoto_id(photoId);
 				dm.addRow(smsObj);
 
 				AlarmManager alarmMgr = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
 
-				alarmMgr.set(AlarmManager.RTC_WAKEUP, time, PendingIntent
-						.getBroadcast(this, 1, intent,
+				alarmMgr.set(AlarmManager.RTC_WAKEUP, calSet.getTimeInMillis(),
+						PendingIntent.getBroadcast(this, 1, intent,
 								PendingIntent.FLAG_UPDATE_CURRENT));
-				Log.i(TAG, "Alarm Scheduled :" + time);
 
 				Toast.makeText(getApplicationContext(), "Alarm Scheduled ",
 						Toast.LENGTH_LONG).show();
@@ -172,6 +177,12 @@ public class AddNewSmsReminder extends FragmentActivity implements
 									.getString(phones
 											.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME));
 							phoneNumEdit.setText(phoneNo.toString());
+							contactId = phones
+									.getLong(phones
+											.getColumnIndex(ContactsContract.Contacts._ID));
+							photoId = phones
+									.getLong(phones
+											.getColumnIndex(ContactsContract.Contacts.PHOTO_ID));
 
 						}
 						String name = c
@@ -195,8 +206,7 @@ public class AddNewSmsReminder extends FragmentActivity implements
 		smsStr = "";
 		phoneNo = "";
 		dm = new DatabaseManager(this);
-		time = new GregorianCalendar().getTimeInMillis() + 60 * 1000;
-		day = 0L;
+		calSet = Calendar.getInstance();
 	}
 
 	public void showTimePickerDialog(View view) {
@@ -208,9 +218,16 @@ public class AddNewSmsReminder extends FragmentActivity implements
 	@Override
 	public void onTimePicked(Calendar cTime) {
 		// TODO Auto-generated method stb
-		time = cTime.getTimeInMillis();
-
-		showTime.setText(DateFormat.format("h:mm a", time));
+		calSet = Calendar.getInstance();
+		calSet.clear(Calendar.HOUR_OF_DAY);
+		calSet.set(Calendar.HOUR_OF_DAY, cTime.get(cTime.HOUR_OF_DAY)); // HOUR
+		calSet.clear(Calendar.MINUTE);
+		calSet.set(Calendar.MINUTE, cTime.get(cTime.MINUTE)); // MIN
+		Log.d(TAG, DateFormat.format("h:mm a", cTime.getTimeInMillis())
+				.toString());
+		Log.d(TAG, DateFormat.format("h:mm a", calSet.getTimeInMillis())
+				.toString());
+		showTime.setText(DateFormat.format("h:mm a", cTime.getTimeInMillis()));
 	}
 
 	public void showDatePickerDialog(View view) {
@@ -221,7 +238,15 @@ public class AddNewSmsReminder extends FragmentActivity implements
 	@Override
 	public void onDatePicked(Calendar dTime) {
 
-		day = dTime.getTimeInMillis();
+		calSet = Calendar.getInstance();
+		calSet.clear(Calendar.DAY_OF_MONTH);
+		calSet.set(Calendar.DAY_OF_MONTH, dTime.get(dTime.DAY_OF_MONTH)); // 1-31
+		calSet.clear(Calendar.MONTH);
+		calSet.set(Calendar.MONTH, dTime.get(dTime.MONTH));
+		calSet.clear(Calendar.YEAR);
+		calSet.set(Calendar.YEAR, dTime.get(dTime.YEAR));// year...
+		Log.d(TAG, DateFormat.format("d/M/y", dTime).toString());
+		Log.d(TAG, DateFormat.format("d/M/y", calSet).toString());
 		showDate.setText(DateFormat.format("d/M/y", dTime));
 	}
 }

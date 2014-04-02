@@ -1,9 +1,30 @@
 package com.android.smsDatabase.model;
 
-
 public class SmsModel {
 
 	int id;
+
+	String message, contactName, contactNumber;;
+
+	long sendTime, initialTime,contact_id, photo_id;
+	
+
+
+	public long getPhoto_id() {
+		return photo_id;
+	}
+
+	public void setPhoto_id(long photo_id) {
+		this.photo_id = photo_id;
+	}
+
+	public long getContact_id() {
+		return contact_id;
+	}
+
+	public void setContact_id(long contact_id) {
+		this.contact_id = contact_id;
+	}
 
 	public int getId() {
 		return id;
@@ -12,10 +33,6 @@ public class SmsModel {
 	public void setId(int id) {
 		this.id = id;
 	}
-
-	String message, contactName, contactNumber;;
-
-	long sendTime, initialTime;
 
 	public String getMessage() {
 		return message;
